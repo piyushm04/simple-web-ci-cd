@@ -1,0 +1,43 @@
+pipeline {
+    agent any
+
+    environment {
+        DEPLOY_DIR = "/var/www/html"
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                echo 'Pulling code from GitHub...'
+                git branch: 'main', url: 'https://github.com/piyushm04/simple-web-ci-cd.git'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                echo 'Build step running...'
+                sh 'ls'
+            }
+        }
+
+        stage('Test') {
+            steps {
+                echo 'Testing HTML...'
+                sh 'tidy -errors index.html || true'
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                echo 'Deploying files...'
+                sh 'cp -r * ${DEPLOY_DIR}/'
+            }
+        }
+    }
+
+    post {
+        success {
+            echo "Visit: http://localhost/index.html"
+        }
+    }
+}
